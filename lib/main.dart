@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:outfit_oracle/screens/collection_screen.dart';
 
 
 void main() {
@@ -16,24 +17,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
+
+      home:  Scaffold(
+        appBar: AppBar(
+          title: const Text('Outfit Oracle'),
+          centerTitle: true,
+
+        ),
+          body: const CollectionScreen()),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
