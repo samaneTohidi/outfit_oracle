@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 import '../models/collection_list_model.dart';
 
-Future<CollectionListModel> collectionListRequest() async {
+Future<CollectionListModel> collectionListRequest({required int limit, required int offset}) async {
   var headers = {
     'Content-Type': 'application/json',
   };
@@ -19,7 +19,7 @@ Future<CollectionListModel> collectionListRequest() async {
 
   try {
     var response = await dio.post(
-      'http://82.115.19.138:8282/api/v1/collection/list?limit=10&offset=2',
+      'http://82.115.19.138:8282/api/v1/collection/list?limit=$limit&offset=$offset',
       options: Options(
         headers: headers,
       ),

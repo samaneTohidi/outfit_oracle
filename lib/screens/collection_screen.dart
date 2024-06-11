@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/widgets/collection_list_widget.dart';
 
@@ -13,9 +12,12 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
-  CollectionListModel? collectionListModel;
   bool isLoading = true;
   String? errorMessage;
+  List<Collections> collections = [];
+  bool isLoadingMore = false;
+  int limit = 10;
+  int offset = 0;
 
   @override
   void initState() {
@@ -24,25 +26,60 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 
   void loadCollectionList() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
-      CollectionListModel data = await collectionListRequest();
+      CollectionListModel data =
+          await collectionListRequest(limit: limit, offset: offset);
       setState(() {
-        collectionListModel = data;
+        collections.addAll(data.collections ?? []);
         isLoading = false;
+        isLoadingMore = false;
       });
     } catch (e) {
       setState(() {
         errorMessage = e.toString();
         isLoading = false;
+        isLoadingMore = false;
       });
+    }
+  }
+
+  void loadMore() {
+    if (!isLoadingMore) {
+      setState(() {
+        isLoadingMore = true;
+        offset += limit;
+      });
+      loadCollectionList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final collectionList = collectionListModel?.collections ?? [];
-    return isLoading
+    return isLoading && collections.isEmpty
         ? const Center(child: CircularProgressIndicator())
-        : CollectionListWidget(collections: collectionList);
+        : NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent &&
+                  !isLoadingMore) {
+                loadMore();
+              }
+              return false;
+            },
+            child: Column(
+              children: [
+                Expanded(child: CollectionListWidget(collections: collections)),
+                if (isLoadingMore)
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
+          );
+    // : CollectionListWidget(collections: collectionList);
   }
 }
