@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/screens/collection_screen.dart';
+import 'package:outfit_oracle/screens/detail_screen.dart';
 
 
 void main() {
@@ -19,13 +20,13 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home:  Scaffold(
+      home: Scaffold(
         appBar: AppBar(
           title: const Text('Outfit Oracle'),
           centerTitle: true,
 
         ),
-          body: const CollectionScreen()),
+          body: const DetailScreen()),
     );
   }
 }
