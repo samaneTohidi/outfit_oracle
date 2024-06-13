@@ -23,7 +23,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> _fetchDetails() async {
     try {
-      DetailViewModel detailViewModel = await detailViewRequest(id: 480);
+      DetailViewModel detailViewModel = await detailViewRequest(id: 432);
       setState(() {
         _detailViewModel = detailViewModel;
         _isLoading = false;
@@ -38,10 +38,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    print('SAMANO1${_detailViewModel?.collection?.image}');
-    print('SAMANO${_detailViewModel?.collection?.description}');
-
     return Scaffold(
       appBar: AppBar(
         title:  Text(
@@ -59,7 +55,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            'https://i.pinimg.com/474x/ec/f5/e7/ecf5e7508c6a294f8ec38f8016493dca.jpg',
+                            _detailViewModel?.collection?.image ?? '',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.error),
@@ -77,7 +73,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(_detailViewModel?.collection?.description ?? '',
-                                  style: TextStyle(),
+                                  style: const TextStyle(),
                                 ),
                               ),
                               const SizedBox(height: 10.0),
