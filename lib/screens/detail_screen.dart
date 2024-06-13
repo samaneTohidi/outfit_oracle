@@ -4,7 +4,8 @@ import '../models/detail_view_model.dart';
 import '../repository/detail_view_request.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+  final int id;
+  const DetailScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -23,7 +24,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> _fetchDetails() async {
     try {
-      DetailViewModel detailViewModel = await detailViewRequest(id: 432);
+      DetailViewModel detailViewModel = await detailViewRequest(id: widget.id);
       setState(() {
         _detailViewModel = detailViewModel;
         _isLoading = false;

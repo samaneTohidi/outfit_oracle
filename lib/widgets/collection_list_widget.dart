@@ -23,6 +23,7 @@ class CollectionListWidget extends StatelessWidget {
         return CollectionItemWidget(
           imageUrl: item.image!,
           label: item.title!,
+          id: item.id!,
         );
       },
     );
