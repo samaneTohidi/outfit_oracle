@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/screens/collection_screen.dart';
 import 'package:outfit_oracle/screens/detail_screen.dart';
+import 'package:outfit_oracle/screens/moodboard_screen.dart';
 
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
 
         ),
-          body: const CollectionScreen()),
+          body: const MoodBoardScreen()),
     );
   }
 }
