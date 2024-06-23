@@ -8,7 +8,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
-import '../screens/sort_sheet.dart';
+import '../widgets/sort_sheet.dart';
 
 part 'moodboard_database.g.dart';
 

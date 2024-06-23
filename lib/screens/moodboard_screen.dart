@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:outfit_oracle/screens/bookmark.dart';
-import 'package:outfit_oracle/screens/sort_sheet.dart';
+import 'package:outfit_oracle/widgets/create_moodboard_sheet.dart';
+import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
 import '../repository/moodboard_database.dart';
 import 'detail_screen.dart';
@@ -63,103 +63,103 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('SAAAAM$_categories');
-    print('SAAAAM');
-
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(color: Colors.teal[600]),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 32.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.sort),
-                    color: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        showSortModalBottomSheet(context, _sortBy, _handleSort);
-                      });
-                    },
-                  ),
-                  Text(
-                    _sortBy!.description ?? '',
-                    style: const TextStyle(fontSize: 14, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _categories.length,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: Key(_categories[index].id.toString()),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) async {
-                      await _deleteCat(_categories[index].id);
-                    },
-
-                    background: Container(
-                      color: Colors.red,
-                      alignment: Alignment.centerRight,
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 10.0),
-                      child:
-                      const Icon(Icons.delete, color: Colors.white),
-                    ),
-                    child: Card(
-                      margin: const EdgeInsets.all(8),
-                      child: ListTile(
-                        // trailing: Image.asset(
-                        //   'assets/images/t_shirt.png',
-                        //   fit: BoxFit.fill,
-                        // ),
-                        title: Text(_categories[index].name),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return DetailScreen(
-                                id: 10,
-                                // cat: _categories[index],
-                                // onCategoryDeleted: _handleCategoryDeleted,
-                              );
-                            }),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.bottomCenter,
-              child: FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  showWishModalBottomSheet(context);
-                },
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        title: const Text(
+          'MY MOODBOARD', style:  TextStyle(fontSize: 14.0),
         ),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 32.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.sort),
+                  onPressed: () {
+                    setState(() {
+                      showSortModalBottomSheet(context, _sortBy, _handleSort);
+                    });
+                  },
+                ),
+                Text(
+                  _sortBy!.description ?? '',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _categories.length,
+              itemBuilder: (context, index) {
+                return Dismissible(
+                  key: Key(_categories[index].id.toString()),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) async {
+                    await _deleteCat(_categories[index].id);
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0),
+                    child:
+                    const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Card(
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      // trailing: Image.asset(
+                      //   'assets/images/t_shirt.png',
+                      //   fit: BoxFit.fill,
+                      // ),
+                      title: Text(_categories[index].name),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return DetailScreen(
+                              id: 10,
+                              // cat: _categories[index],
+                              // onCategoryDeleted: _handleCategoryDeleted,
+                            );
+                          }),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(24.0),
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                showMoodboardModalBottomSheet(context);
+
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
-  void showWishModalBottomSheet(BuildContext context) {
+
+  void showMoodboardModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          widthFactor: 0.9,
-          heightFactor: 0.7,
-          child: Bookmark(
+          widthFactor: 1,
+          heightFactor: 1,
+          child: CreateMoodboardSheet(
             cats: _categories,
             onCatsUpdated: _updateCategories,
           ),
