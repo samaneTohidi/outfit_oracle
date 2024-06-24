@@ -5,7 +5,6 @@ import 'package:outfit_oracle/widgets/sort_sheet.dart';
 import '../repository/moodboard_database.dart';
 import 'detail_screen.dart';
 
-
 class MoodBoardScreen extends StatefulWidget {
   const MoodBoardScreen({super.key});
 
@@ -54,19 +53,21 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     _fetchCategories();
   }
 
-
   Future<void> _deleteCat(int catId) async {
     await MyDatabase.instance.deleteCategory(catId);
     await _fetchCategories();
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'MY MOODBOARD', style:  TextStyle(fontSize: 14.0),
+          'MY MOODBOARD',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -104,33 +105,73 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                   background: Container(
                     color: Colors.red,
                     alignment: Alignment.centerRight,
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0),
-                    child:
-                    const Icon(Icons.delete, color: Colors.white),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
-                  child: Card(
-                    margin: const EdgeInsets.all(8),
-                    child: ListTile(
-                      // trailing: Image.asset(
-                      //   'assets/images/t_shirt.png',
-                      //   fit: BoxFit.fill,
-                      // ),
-                      title: Text(_categories[index].name),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return DetailScreen(
-                              id: 10,
-                              // cat: _categories[index],
-                              // onCategoryDeleted: _handleCategoryDeleted,
-                            );
-                          }),
+                  child: Stack(alignment: const Alignment(0.9, 0.9), children: [
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        // Number of items per row
+                        childAspectRatio: 8 / 10,
+                        // Aspect ratio of each item
+                        crossAxisSpacing: 1.0,
+                        // Spacing between columns
+                        mainAxisSpacing: 1.0, // Spacing between rows
+                      ),
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return GridTile(
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return DetailScreen(
+                                    id: 10,
+                                  );
+                                }),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(2.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
-                  ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 70, right: 70, bottom: 8),
+                      child: Positioned(
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.all(4.0),
+                          child: Align(
+                            child: Column(
+                              children: [
+                                Text(
+                                  _categories[index].name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${_categories.length} looks',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
                 );
               },
             ),
@@ -142,7 +183,6 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
               child: const Icon(Icons.add),
               onPressed: () {
                 showMoodboardModalBottomSheet(context);
-
               },
             ),
           ),
@@ -168,4 +208,3 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     );
   }
 }
-
