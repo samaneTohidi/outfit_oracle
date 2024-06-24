@@ -71,122 +71,125 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 32.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.sort),
-                  onPressed: () {
-                    setState(() {
-                      showSortModalBottomSheet(context, _sortBy, _handleSort);
-                    });
-                  },
-                ),
-                Text(
-                  _sortBy!.description ?? '',
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                return Dismissible(
-                  key: Key(_categories[index].id.toString()),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) async {
-                    await _deleteCat(_categories[index].id);
-                  },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: const Icon(Icons.delete, color: Colors.white),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 32.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.sort),
+                    onPressed: () {
+                      setState(() {
+                        showSortModalBottomSheet(context, _sortBy, _handleSort);
+                      });
+                    },
                   ),
-                  child: Stack(alignment: const Alignment(0.9, 0.9), children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        // Number of items per row
-                        childAspectRatio: 8 / 10,
-                        // Aspect ratio of each item
-                        crossAxisSpacing: 1.0,
-                        // Spacing between columns
-                        mainAxisSpacing: 1.0, // Spacing between rows
+                  Text(
+                    _sortBy!.description ?? '',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Dismissible(
+                      key: Key(_categories[index].id.toString()),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) async {
+                        await _deleteCat(_categories[index].id);
+                      },
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
-                      itemCount: 8,
-                      itemBuilder: (context, index) {
-                        return GridTile(
-                          child: InkResponse(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return DetailScreen(
-                                    id: 10,
+                      child: Stack(alignment: const Alignment(0.9, 0.9), children: [
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio: 8 / 10,
+                            crossAxisSpacing: 1.0,
+                            mainAxisSpacing: 1.0, // Spacing between rows
+                          ),
+                          itemCount: 8,
+                          itemBuilder: (context, index) {
+                            return GridTile(
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return DetailScreen(
+                                        id: 10,
+                                      );
+                                    }),
                                   );
-                                }),
-                              );
-                            },
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(2.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 70, right: 70, bottom: 8),
+                          child: Positioned(
                             child: Container(
-                              margin: const EdgeInsets.all(2.0),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                              color: Colors.white,
+                              padding: EdgeInsets.all(4.0),
+                              child: Align(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      _categories[index].name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${_categories.length} looks',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 70, right: 70, bottom: 8),
-                      child: Positioned(
-                        child: Container(
-                          color: Colors.white,
-                          padding: EdgeInsets.all(4.0),
-                          child: Align(
-                            child: Column(
-                              children: [
-                                Text(
-                                  _categories[index].name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  '${_categories.length} looks',
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
-                      ),
+                      ]),
                     ),
-                  ]),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(24.0),
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showMoodboardModalBottomSheet(context);
-              },
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  showMoodboardModalBottomSheet(context);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
