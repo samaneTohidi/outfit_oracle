@@ -29,7 +29,8 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
           ),
           centerTitle: true,
       ),
-      body: GridView.builder(
+      body:
+      GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 2 / 3,

@@ -52,7 +52,8 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
     double arrowDownHeight = screenSize.height * 0.12;
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
+      child:
+      Column(
         children: [
           Container(
             height: arrowDownHeight,
@@ -114,19 +115,24 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                TextField(
-                  controller: _moodboardNameController,
-                  decoration: const InputDecoration(
-                    hintText: 'Moodboard name*',
-                    hintStyle: TextStyle(
-                      fontSize: 20,
-                      color: Colors.grey,
+                Padding(
+                  padding: const EdgeInsets.only(left:24 , right: 24),
+                  child: TextField(
+                    controller: _moodboardNameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Moodboard name*',
+                      hintStyle: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25))
+                      ),
+                      contentPadding: EdgeInsets.all(10.0),
                     ),
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(10.0),
+                    textAlign: TextAlign.center,
+                    onSubmitted: (String value) async {},
                   ),
-                  textAlign: TextAlign.center,
-                  onSubmitted: (String value) async {},
                 ),
               ],
             ),

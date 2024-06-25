@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:outfit_oracle/widgets/add_category_sheet.dart';
 
 import '../models/detail_view_model.dart';
 import '../repository/detail_view_request.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import '../widgets/save_collection_sheet.dart';
+
 
 class DetailScreen extends StatefulWidget {
   final int id;
@@ -107,7 +108,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Add your save functionality here
+                      // showAddCategoryModalBottomSheet(context);
+                      showSaveCollectionModalBottomSheet(context);
                     },
                     icon: const Icon(Icons.save),
                     label: const Text('Save'),
