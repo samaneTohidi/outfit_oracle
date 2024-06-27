@@ -4,7 +4,7 @@ part of 'moodboard_database.dart';
 
 // ignore_for_file: type=lint
 class $CategoriesTable extends Categories
-    with drift.TableInfo<$CategoriesTable, Category> {
+    with drift.TableInfo<$CategoriesTable, CategoryDB> {
   @override
   final drift.GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -43,7 +43,7 @@ class $CategoriesTable extends Categories
   static const String $name = 'categories';
   @override
   drift.VerificationContext validateIntegrity(
-      drift.Insertable<Category> instance,
+      drift.Insertable<CategoryDB> instance,
       {bool isInserting = false}) {
     final context = drift.VerificationContext();
     final data = instance.toColumns(true);
@@ -66,9 +66,9 @@ class $CategoriesTable extends Categories
   @override
   Set<drift.GeneratedColumn> get $primaryKey => {id};
   @override
-  Category map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CategoryDB map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Category(
+    return CategoryDB(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -84,11 +84,11 @@ class $CategoriesTable extends Categories
   }
 }
 
-class Category extends drift.DataClass implements drift.Insertable<Category> {
+class CategoryDB extends drift.DataClass implements drift.Insertable<CategoryDB> {
   final int id;
   final String name;
   final String? image;
-  const Category({required this.id, required this.name, this.image});
+  const CategoryDB({required this.id, required this.name, this.image});
   @override
   Map<String, drift.Expression> toColumns(bool nullToAbsent) {
     final map = <String, drift.Expression>{};
@@ -110,10 +110,10 @@ class Category extends drift.DataClass implements drift.Insertable<Category> {
     );
   }
 
-  factory Category.fromJson(Map<String, dynamic> json,
+  factory CategoryDB.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= drift.driftRuntimeOptions.defaultSerializer;
-    return Category(
+    return CategoryDB(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       image: serializer.fromJson<String?>(json['image']),
@@ -129,11 +129,11 @@ class Category extends drift.DataClass implements drift.Insertable<Category> {
     };
   }
 
-  Category copyWith(
+  CategoryDB copyWith(
           {int? id,
           String? name,
           drift.Value<String?> image = const drift.Value.absent()}) =>
-      Category(
+      CategoryDB(
         id: id ?? this.id,
         name: name ?? this.name,
         image: image.present ? image.value : this.image,
@@ -153,13 +153,13 @@ class Category extends drift.DataClass implements drift.Insertable<Category> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Category &&
+      (other is CategoryDB &&
           other.id == this.id &&
           other.name == this.name &&
           other.image == this.image);
 }
 
-class CategoriesCompanion extends drift.UpdateCompanion<Category> {
+class CategoriesCompanion extends drift.UpdateCompanion<CategoryDB> {
   final drift.Value<int> id;
   final drift.Value<String> name;
   final drift.Value<String?> image;
@@ -173,7 +173,7 @@ class CategoriesCompanion extends drift.UpdateCompanion<Category> {
     required String name,
     this.image = const drift.Value.absent(),
   }) : name = drift.Value(name);
-  static drift.Insertable<Category> custom({
+  static drift.Insertable<CategoryDB> custom({
     drift.Expression<int>? id,
     drift.Expression<String>? name,
     drift.Expression<String>? image,
@@ -508,7 +508,7 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
 class $$CategoriesTableTableManager extends drift.RootTableManager<
     _$MyDatabase,
     $CategoriesTable,
-    Category,
+    CategoryDB,
     $$CategoriesTableFilterComposer,
     $$CategoriesTableOrderingComposer,
     $$CategoriesTableProcessedTableManager,
@@ -551,7 +551,7 @@ class $$CategoriesTableProcessedTableManager
     extends drift.ProcessedTableManager<
         _$MyDatabase,
         $CategoriesTable,
-        Category,
+        CategoryDB,
         $$CategoriesTableFilterComposer,
         $$CategoriesTableOrderingComposer,
         $$CategoriesTableProcessedTableManager,

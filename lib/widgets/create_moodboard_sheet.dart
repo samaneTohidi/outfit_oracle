@@ -7,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import '../repository/moodboard_database.dart';
 
 class CreateMoodboardSheet extends StatefulWidget {
-  final List<Category> cats;
-  final ValueChanged<List<Category>> onCatsUpdated;
+  final List<CategoryDB> cats;
+  final ValueChanged<List<CategoryDB>> onCatsUpdated;
 
   const CreateMoodboardSheet({super.key, required this.cats, required this.onCatsUpdated});
 

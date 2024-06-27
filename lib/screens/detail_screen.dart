@@ -108,8 +108,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // showAddCategoryModalBottomSheet(context);
-                      showSaveCollectionModalBottomSheet(context);
+                      showSaveCollectionModalBottomSheet(context,_detailViewModel!);
                     },
                     icon: const Icon(Icons.save),
                     label: const Text('Save'),

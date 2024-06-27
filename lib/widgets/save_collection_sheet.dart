@@ -4,23 +4,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:outfit_oracle/widgets/add_category_sheet.dart';
+import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
+import '../models/detail_view_model.dart';
 import '../repository/moodboard_database.dart';
 
 class SaveCollectionSheet extends StatefulWidget {
-  const SaveCollectionSheet({super.key});
+  DetailViewModel detail;
+   SaveCollectionSheet({super.key, required this.detail});
 
   @override
   State<SaveCollectionSheet> createState() => _SaveCollectionSheetState();
 }
 
 class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
-
   final _db = MyDatabase.instance;
+  List<CategoryDB> _categories = [];
+  final SortData _sortBy = SortData.lastAdded;
+
+  late CategoryDB _category;
 
   @override
   void initState() {
+    _fetchCategories();
     super.initState();
   }
 
@@ -29,6 +35,31 @@ class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
     super.dispose();
   }
 
+  Future<void> _fetchCategories() async {
+    final categories = await _db.getCategoriesSortedBy(_sortBy);
+    setState(() {
+      _categories = categories;
+    });
+  }
+
+  void _saveItem() async {
+    final  itemId = widget.detail.collection?.id.toString();
+    final itemLink = widget.detail.collection?.image;
+    final cat = _category.name;
+
+    final newCategory = CategoriesCompanion(
+      name: drift.Value(cat),
+    );
+
+    final newItem = ItemsCompanion(
+      name: drift.Value(itemId!),
+      link: drift.Value(itemLink),
+      categoryId: const drift.Value(0),
+    );
+
+    await _db.addCategoryWithItems(newCategory, [newItem]);
+
+  }
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -74,42 +105,39 @@ class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
               crossAxisSpacing: 1.0,
               mainAxisSpacing: 1.0,
             ),
-            itemCount: 20,
+            itemCount: _categories.length,
             itemBuilder: (context, index){
-              if(index == 0){
+                // return GridTile(
+                //   child: InkResponse(
+                //     onTap: () {
+                //      showAddCategoryModalBottomSheet(context);
+                //     },
+                //     child: Stack(
+                //       children:[
+                //         Container(
+                //         margin: const EdgeInsets.all(8.0),
+                //         decoration: BoxDecoration(
+                //           border: Border.all(color: Colors.grey, width: 2),
+                //         ),
+                //       ),
+                //         const Center(
+                //           child: Icon(
+                //             Icons.add,
+                //           ),
+                //         ),
+                //       ]
+                //
+                //     ),
+                //   ),
+                // );
                 return GridTile(
                   child: InkResponse(
                     onTap: () {
-                     showAddCategoryModalBottomSheet(context);
-                    },
-                    child: Stack(
-                      children:[
-                        Container(
-                        margin: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 2),
-                        ),
-                      ),
-                        const Center(
-                          child: Icon(
-                            Icons.add,
-                          ),
-                        ),
-                      ]
+                      setState(() {
+                        _category = _categories[index];
 
-                    ),
-                  ),
-                );
-              }else{
-                return GridTile(
-                  child: InkResponse(
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) {
-                      //     return const DetailScreen(id: 10);
-                      //   }),
-                      // );
+                      });
+                      _saveItem();
                     },
                     child: Container(
                       margin: const EdgeInsets.all(8.0),
@@ -118,7 +146,7 @@ class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
                           image: const NetworkImage(
                             'https://i.pinimg.com/474x/c6/62/26/c66226dc6b2bacc88095a4995f42d9ee.jpg',
                           ),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           onError: (error, stackTrace) => const Icon(Icons.error),
                         ),
                       ),
@@ -126,8 +154,6 @@ class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
                   ),
                 );
               }
-
-            },
           ),
         ),
 
@@ -136,15 +162,15 @@ class _SaveCollectionSheetState extends State<SaveCollectionSheet> {
 }
 
 
-void showSaveCollectionModalBottomSheet(BuildContext context) {
+void showSaveCollectionModalBottomSheet(BuildContext context, DetailViewModel detail) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (BuildContext context) {
-      return const FractionallySizedBox(
+      return  FractionallySizedBox(
         heightFactor: 0.3,
         widthFactor: 1,
-        child: SaveCollectionSheet(),
+        child: SaveCollectionSheet(detail: detail),
       );
     },
   );

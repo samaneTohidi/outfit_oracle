@@ -5,19 +5,32 @@ import 'package:outfit_oracle/screens/detail_screen.dart';
 
 
 class CategoryItemsScreen extends StatefulWidget {
-    // final Category categories;
-   CategoryItemsScreen({super.key});
+  final CategoryDB cat;
+   CategoryItemsScreen({super.key, required this.cat});
 
   @override
   State<CategoryItemsScreen> createState() => _CategoryItemsScreenState();
 }
 
 class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
+  final _db = MyDatabase.instance;
+  List<Item> _items = [];
 
   @override
   void initState() {
     super.initState();
+    _fetchItems();
   }
+
+
+  Future<void> _fetchItems() async {
+    final items = await _db.getItemsByCategoryId(widget.cat.id);
+    setState(() {
+      _items = items;
+      print('item ${items.first.link}');
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +50,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
             crossAxisSpacing: 1.0,
             mainAxisSpacing: 1.0,
           ),
-          itemCount: 9,
+          itemCount: _items.length,
           itemBuilder: (context, index){
             return GridTile(
               child: InkResponse(
@@ -53,8 +66,8 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
                   margin: const EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: const NetworkImage(
-                        'https://i.pinimg.com/474x/c6/62/26/c66226dc6b2bacc88095a4995f42d9ee.jpg',
+                      image:  NetworkImage(
+                        _items[index].link ?? '',
                       ),
                       fit: BoxFit.fill,
                       onError: (error, stackTrace) => const Icon(Icons.error),

@@ -42,7 +42,7 @@ class MyDatabase extends _$MyDatabase {
     return await select(items).get();
   }
 
-  Future<List<Category>> getCategories() async {
+  Future<List<CategoryDB>> getCategories() async {
     return await select(categories).get();
 
   }
@@ -64,7 +64,7 @@ class MyDatabase extends _$MyDatabase {
     await (delete(categories)..where((tbl) => tbl.id.equals(categoryId))).go();
   }
 
-  Future<Category?> getCategoryByName(String name) async {
+  Future<CategoryDB?> getCategoryByName(String name) async {
     return (select(categories)..where((tbl) => tbl.name.equals(name))).getSingleOrNull();
   }
 
@@ -72,7 +72,7 @@ class MyDatabase extends _$MyDatabase {
     return (select(items)..where((tbl) => tbl.categoryId.equals(categoryId))).get();
   }
 
-  Future<List<Category>> getCategoriesSortedBy(SortData sortBy) async {
+  Future<List<CategoryDB>> getCategoriesSortedBy(SortData sortBy) async {
     final query = select(categories);
     switch (sortBy) {
       case SortData.firstAdded:
@@ -89,7 +89,6 @@ class MyDatabase extends _$MyDatabase {
   }
 
   Future<void> addCategoryWithItems(CategoriesCompanion category, List<ItemsCompanion> items) async {
-    print('SAAAAM addCategoryWithItems;$category, $items');
     return transaction(() async {
       final existingCategory = await getCategoryByName(category.name.value);
 
@@ -112,8 +111,6 @@ class MyDatabase extends _$MyDatabase {
 }
 
 LazyDatabase _openConnection() {
-  print('SAAAAM _openConnection');
-
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
