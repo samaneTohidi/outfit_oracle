@@ -8,7 +8,7 @@ import '../widgets/save_collection_sheet.dart';
 
 class DetailScreen extends StatefulWidget {
   final int id;
-  const DetailScreen({Key? key, required this.id}) : super(key: key);
+   DetailScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   _DetailScreenState createState() => _DetailScreenState();

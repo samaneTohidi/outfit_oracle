@@ -4,7 +4,6 @@ import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
 import '../repository/moodboard_database.dart';
 import 'category_items_screen.dart';
-import 'detail_screen.dart';
 
 class MoodBoardScreen extends StatefulWidget {
   const MoodBoardScreen({super.key});
@@ -16,6 +15,7 @@ class MoodBoardScreen extends StatefulWidget {
 class _MoodBoardScreenState extends State<MoodBoardScreen> {
   List<CategoryDB> _categories = [];
   SortData? _sortBy = SortData.lastAdded;
+  Map<int, int> _itemCounts = {};
 
   final _db = MyDatabase.instance;
 
@@ -38,14 +38,16 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
 
   Future<void> _fetchCategories() async {
     final categories = await _db.getCategoriesSortedBy(_sortBy!);
+    final itemCounts = <int, int>{};
+    for (var category in categories) {
+      itemCounts[category.id] = await _db.getItemCountByCategoryId(category.id);
+    }
     setState(() {
       _categories = categories;
+      _itemCounts = itemCounts;
     });
   }
 
-  void _handleCategoryDeleted() {
-    _fetchCategories();
-  }
 
   void _handleSort(SortData? newSort) {
     setState(() {
@@ -100,6 +102,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                   child: ListView.builder(
                     itemCount: _categories.length,
                     itemBuilder: (context, index) {
+                      final category = _categories[index];
+                      final itemCount = _itemCounts[category.id] ?? 0;
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Dismissible(
@@ -153,7 +157,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                                   child: Positioned(
                                     child: Container(
                                       color: Colors.white,
-                                      padding: EdgeInsets.all(4.0),
+                                      padding: const EdgeInsets.all(4.0),
                                       child: Align(
                                         child: Column(
                                           children: [
@@ -164,8 +168,9 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                                               ),
                                             ),
                                             Text(
-                                              '${_categories.length} looks',
+                                              '${itemCount} looks',
                                             ),
+
                                           ],
                                         ),
                                       ),

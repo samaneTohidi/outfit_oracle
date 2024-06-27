@@ -27,7 +27,6 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
     final items = await _db.getItemsByCategoryId(widget.cat.id);
     setState(() {
       _items = items;
-      print('item ${items.first.link}');
     });
   }
 
@@ -58,7 +57,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return const DetailScreen(id: 10);
+                      return  DetailScreen(id: int.tryParse(_items[index].name) ?? 0);
                     }),
                   );
                 },
