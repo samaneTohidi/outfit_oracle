@@ -21,13 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Outfit Oracle'),
-          centerTitle: true,
-
-        ),
-          body: const NavigationDemo()),
+      home: const NavigationDemo(),
     );
   }
 }

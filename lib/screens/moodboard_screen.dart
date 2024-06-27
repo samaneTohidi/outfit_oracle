@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/widgets/create_moodboard_sheet.dart';
 import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
 import '../repository/moodboard_database.dart';
 import 'category_items_screen.dart';
-import 'detail_screen.dart';
 
 class MoodBoardScreen extends StatefulWidget {
   const MoodBoardScreen({super.key});
@@ -16,6 +17,8 @@ class MoodBoardScreen extends StatefulWidget {
 class _MoodBoardScreenState extends State<MoodBoardScreen> {
   List<CategoryDB> _categories = [];
   SortData? _sortBy = SortData.lastAdded;
+  Map<int, int> _itemCounts = {};
+  Map<int, List<Item>> _items = {};
 
   final _db = MyDatabase.instance;
 
@@ -38,13 +41,19 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
 
   Future<void> _fetchCategories() async {
     final categories = await _db.getCategoriesSortedBy(_sortBy!);
+    final itemCounts = <int, int>{};
+    final items = <int, List<Item>>{};
+
+    for (var category in categories) {
+      itemCounts[category.id] = await _db.getItemCountByCategoryId(category.id);
+      items[category.id] = await _db.getItemsByCategoryId(category.id);
+    }
+
     setState(() {
       _categories = categories;
+      _itemCounts = itemCounts;
+      _items = items;
     });
-  }
-
-  void _handleCategoryDeleted() {
-    _fetchCategories();
   }
 
   void _handleSort(SortData? newSort) {
@@ -74,10 +83,9 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child:
-        Stack(
-            children:
-            [Column(
+        child: Stack(
+          children: [
+            Column(
               children: [
                 Row(
                   children: [
@@ -85,8 +93,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                       icon: const Icon(Icons.sort),
                       onPressed: () {
                         setState(() {
-                          showSortModalBottomSheet(
-                              context, _sortBy, _handleSort);
+                          showSortModalBottomSheet(context, _sortBy, _handleSort);
                         });
                       },
                     ),
@@ -100,6 +107,13 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                   child: ListView.builder(
                     itemCount: _categories.length,
                     itemBuilder: (context, index) {
+                      final category = _categories[index];
+                      final itemCount = _itemCounts[category.id] ?? 0;
+                      final items = _items[category.id] ?? [];
+
+                      final imageLink = category.image;
+                      final imageFile = File(imageLink!);
+
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Dismissible(
@@ -126,45 +140,76 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                             child: Stack(
                               alignment: const Alignment(0.9, 0.9),
                               children: [
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    childAspectRatio: 8 / 10,
-                                    crossAxisSpacing: 1.0,
-                                    mainAxisSpacing: 1.0, // Spacing between rows
-                                  ),
-                                  itemCount: 8,
-                                  itemBuilder: (context, gridIndex) {
-                                    return GridTile(
-                                      child: Container(
-                                        margin: const EdgeInsets.all(2.0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[200],
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: AspectRatio(
+                                        aspectRatio: 1 / 1.5,
+                                        child: Container(
+                                          margin: const EdgeInsets.all(2.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            image: DecorationImage(
+                                              image: FileImage(imageFile),
+                                              fit: BoxFit.cover,
+                                              onError: (error, stackTrace) => const Icon(Icons.error),
+                                            ),
+                                          ),
                                         ),
                                       ),
-
-                                    );
-                                  },
+                                    ),
+                                    Flexible(
+                                      flex: 3,
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          childAspectRatio: 8 / 10,
+                                          crossAxisSpacing: 1.0,
+                                          mainAxisSpacing: 1.0,
+                                        ),
+                                        itemCount: 8,
+                                        itemBuilder: (context, gridIndex) {
+                                          final imageLink = gridIndex < items.length ? items[gridIndex].link : null;
+                                          return GridTile(
+                                            child: Container(
+                                              margin: const EdgeInsets.all(2.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[200],
+                                                image: imageLink != null && imageLink.isNotEmpty
+                                                    ? DecorationImage(
+                                                  image: NetworkImage(imageLink),
+                                                  fit: BoxFit.cover,
+                                                  onError: (error, stackTrace) => const Icon(Icons.error),
+                                                )
+                                                    : null,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 70, right: 70, bottom: 8),
                                   child: Positioned(
                                     child: Container(
                                       color: Colors.white,
-                                      padding: EdgeInsets.all(4.0),
+                                      padding: const EdgeInsets.all(4.0),
                                       child: Align(
                                         child: Column(
                                           children: [
                                             Text(
-                                              _categories[index].name,
+                                          _categories[index].name,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                              '${_categories.length} looks',
+                                              '${itemCount} looks',
                                             ),
                                           ],
                                         ),
@@ -180,21 +225,19 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                     },
                   ),
                 ),
-
               ],
             ),
-              Container(
-                padding: const EdgeInsets.all(24.0),
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                  child: const Icon(Icons.add),
-                  onPressed: () {
-                    showMoodboardModalBottomSheet(context);
-                  },
-                ),
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  showMoodboardModalBottomSheet(context);
+                },
               ),
-            ]
-
+            ),
+          ],
         ),
       ),
     );

@@ -88,6 +88,12 @@ class MyDatabase extends _$MyDatabase {
     return query.get();
   }
 
+  Future<bool> itemExists(String itemId) async {
+    final query = select(items)..where((item) => item.name.equals(itemId));
+    final result = await query.get();
+    return result.isNotEmpty;
+  }
+
   Future<void> addCategoryWithItems(CategoriesCompanion category, List<ItemsCompanion> items) async {
     return transaction(() async {
       final existingCategory = await getCategoryByName(category.name.value);
@@ -105,6 +111,10 @@ class MyDatabase extends _$MyDatabase {
     });
   }
 
+  Future<int> getItemCountByCategoryId(int categoryId) async {
+    final items = await getItemsByCategoryId(categoryId);
+    return items.length;
+  }
 
   @override
   int get schemaVersion => 1;

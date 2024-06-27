@@ -59,7 +59,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   Widget build(BuildContext context) {
     return isLoading && collections.isEmpty
-        ? const Center(child: CircularProgressIndicator())
+        ? Scaffold(body: const Center(child: CircularProgressIndicator()))
         : NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo.metrics.pixels ==
@@ -69,15 +69,21 @@ class _CollectionScreenState extends State<CollectionScreen> {
               }
               return false;
             },
-            child: Column(
-              children: [
-                Expanded(child: CollectionListWidget(collections: collections)),
-                if (isLoadingMore)
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-              ],
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Outfit Oracle'),
+                centerTitle: true,
+              ),
+              body: Column(
+                children: [
+                  Expanded(child: CollectionListWidget(collections: collections)),
+                  if (isLoadingMore)
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                ],
+              ),
             ),
           );
     // : CollectionListWidget(collections: collectionList);
