@@ -16,6 +16,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
   List<CategoryDB> _categories = [];
   SortData? _sortBy = SortData.lastAdded;
   Map<int, int> _itemCounts = {};
+  Map<int, List<Item>> _items = {};
 
   final _db = MyDatabase.instance;
 
@@ -39,12 +40,15 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
   Future<void> _fetchCategories() async {
     final categories = await _db.getCategoriesSortedBy(_sortBy!);
     final itemCounts = <int, int>{};
+    final items = <int ,List<Item>>{};
     for (var category in categories) {
       itemCounts[category.id] = await _db.getItemCountByCategoryId(category.id);
+      items[category.id] = await _db.getItemsByCategoryId(category.id);
     }
     setState(() {
       _categories = categories;
       _itemCounts = itemCounts;
+      _items = items;
     });
   }
 
@@ -104,6 +108,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                     itemBuilder: (context, index) {
                       final category = _categories[index];
                       final itemCount = _itemCounts[category.id] ?? 0;
+                      final items = _items[category.id] ?? [];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Dismissible(
@@ -140,15 +145,22 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                                     mainAxisSpacing: 1.0, // Spacing between rows
                                   ),
                                   itemCount: 8,
-                                  itemBuilder: (context, gridIndex) {
+                                  itemBuilder: (context, gridIndex){
+                                    final imageLink = gridIndex < items.length ? items[gridIndex].link : null;
                                     return GridTile(
                                       child: Container(
                                         margin: const EdgeInsets.all(2.0),
                                         decoration: BoxDecoration(
                                           color: Colors.grey[200],
+                                          image: imageLink != null && imageLink.isNotEmpty
+                                              ? DecorationImage(
+                                            image: NetworkImage(imageLink),
+                                            fit: BoxFit.cover,
+                                            onError: (error, stackTrace) => const Icon(Icons.error),
+                                          )
+                                              : null,
                                         ),
                                       ),
-
                                     );
                                   },
                                 ),

@@ -70,7 +70,6 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
                       ),
                       fit: BoxFit.fill,
                       onError: (error, stackTrace) => const Icon(Icons.error),
-
                     ),
                   ),
                 ),
