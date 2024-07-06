@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outfit_oracle/repository/moodboard_database.dart';
 import 'package:outfit_oracle/screens/detail/detail_screen.dart';
 import 'package:outfit_oracle/screens/search/search_screen.dart';
+
+import '../detail/cubit/detail_cubit.dart';
 
 class MoodBoardDetailScreen extends StatefulWidget {
   final CategoryDB cat;
@@ -55,8 +58,10 @@ class _MoodBoardDetailScreenState extends State<MoodBoardDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return DetailScreen(
-                              id: int.tryParse(_items[index].name) ?? 0);
+                          return BlocProvider(
+                            create: (context) => DetailCubit(),
+                            child: DetailScreen(id: int.tryParse(_items[index].name) ?? 0),
+                          );
                         }),
                       );
                     },
