@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:outfit_oracle/screens/collection_screen.dart';
-import 'package:outfit_oracle/screens/detail_screen.dart';
-import 'package:outfit_oracle/screens/moodboard_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:outfit_oracle/screens/collection/collection_screen.dart';
+import 'package:outfit_oracle/screens/detail/detail_screen.dart';
+import 'package:outfit_oracle/screens/info/cubit/info_cubit.dart';
+import 'package:outfit_oracle/screens/info/info_screen.dart';
+import 'package:outfit_oracle/screens/moodboard/moodboard_screen.dart';
 
 
 void main() {
@@ -58,12 +61,23 @@ class _NavigationDemoState extends State<NavigationDemo> {
             icon: Icon(Icons.bookmark_border_outlined),
             label: 'MoodBoards',
           ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.info),
+            icon: Icon(Icons.info_outline),
+            label: 'Info',
+          ),
 
         ],
       ),
       body: <Widget>[
         const CollectionScreen(),
         const MoodBoardScreen(),
+        BlocProvider(
+          create: (BuildContext context) {
+          return InfoCubit();
+        },
+          child: const InfoScreen(),
+        )
       ][currentPageIndex],
     );
   }

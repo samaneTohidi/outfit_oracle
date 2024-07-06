@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:outfit_oracle/screens/detail_screen.dart';
+import 'package:outfit_oracle/screens/detail/detail_screen.dart';
 
 class CollectionItemWidget extends StatelessWidget {
   final String imageUrl;

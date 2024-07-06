@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/repository/moodboard_database.dart';
-import 'package:outfit_oracle/screens/detail_screen.dart';
-import 'package:outfit_oracle/screens/search_screen.dart';
+import 'package:outfit_oracle/screens/detail/detail_screen.dart';
+import 'package:outfit_oracle/screens/search/search_screen.dart';
 
-class CategoryItemsScreen extends StatefulWidget {
+class MoodBoardDetailScreen extends StatefulWidget {
   final CategoryDB cat;
 
-  CategoryItemsScreen({super.key, required this.cat});
+  MoodBoardDetailScreen({super.key, required this.cat});
 
   @override
-  State<CategoryItemsScreen> createState() => _CategoryItemsScreenState();
+  State<MoodBoardDetailScreen> createState() => _MoodBoardDetailScreenState();
 }
 
-class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
+class _MoodBoardDetailScreenState extends State<MoodBoardDetailScreen> {
   final _db = MyDatabase.instance;
   List<Item> _items = [];
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:outfit_oracle/widgets/create_moodboard_sheet.dart';
 import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
-import '../repository/moodboard_database.dart';
-import 'category_items_screen.dart';
+import '../../repository/moodboard_database.dart';
+import '../moodboard_detail/moodboard_detail_screen.dart';
 
 class MoodBoardScreen extends StatefulWidget {
   const MoodBoardScreen({super.key});
@@ -133,7 +133,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  return CategoryItemsScreen(cat:_categories[index]);
+                                  return MoodBoardDetailScreen(cat:_categories[index]);
                                 }),
                               );
                             },

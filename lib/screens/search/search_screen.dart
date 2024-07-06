@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:outfit_oracle/screens/collection_screen.dart';
+import 'package:outfit_oracle/screens/collection/collection_screen.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/widgets/collection_list_widget.dart';
 
-import '../models/collection_list_model.dart';
-import '../repository/collection_list_request.dart';
+import '../../models/collection_list_model.dart';
+import '../../repository/collection_list_request.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});

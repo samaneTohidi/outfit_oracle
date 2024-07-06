@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:outfit_oracle/widgets/add_category_sheet.dart';
 
-import '../models/detail_view_model.dart';
-import '../repository/detail_view_request.dart';
-import '../widgets/save_collection_sheet.dart';
+import '../../models/detail_view_model.dart';
+import '../../repository/detail_view_request.dart';
+import '../../widgets/save_collection_sheet.dart';
 
 
 class DetailScreen extends StatefulWidget {
