@@ -20,8 +20,8 @@ mixin _$DetailState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)
+    required TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)
         loaded,
     required TResult Function() error,
   }) =>
@@ -30,8 +30,8 @@ mixin _$DetailState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult? Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult? Function()? error,
   }) =>
@@ -40,8 +40,8 @@ mixin _$DetailState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult Function()? error,
     required TResult orElse(),
@@ -132,8 +132,8 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)
+    required TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)
         loaded,
     required TResult Function() error,
   }) {
@@ -145,8 +145,8 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult? Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult? Function()? error,
   }) {
@@ -158,8 +158,8 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult Function()? error,
     required TResult orElse(),
@@ -252,8 +252,8 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)
+    required TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)
         loaded,
     required TResult Function() error,
   }) {
@@ -265,8 +265,8 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult? Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult? Function()? error,
   }) {
@@ -278,8 +278,8 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult Function()? error,
     required TResult orElse(),
@@ -340,8 +340,8 @@ abstract class _$$LoadedImplCopyWith<$Res> {
   @useResult
   $Res call(
       {DetailViewModel detailViewModel,
-      String title,
-      DescriptionDetails descriptionDetails});
+      DescriptionModel descriptionDetails,
+      String title});
 }
 
 /// @nodoc
@@ -356,22 +356,22 @@ class __$$LoadedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? detailViewModel = null,
-    Object? title = null,
     Object? descriptionDetails = null,
+    Object? title = null,
   }) {
     return _then(_$LoadedImpl(
       null == detailViewModel
           ? _value.detailViewModel
           : detailViewModel // ignore: cast_nullable_to_non_nullable
               as DetailViewModel,
+      null == descriptionDetails
+          ? _value.descriptionDetails
+          : descriptionDetails // ignore: cast_nullable_to_non_nullable
+              as DescriptionModel,
       null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      null == descriptionDetails
-          ? _value.descriptionDetails
-          : descriptionDetails // ignore: cast_nullable_to_non_nullable
-              as DescriptionDetails,
     ));
   }
 }
@@ -379,18 +379,18 @@ class __$$LoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl(this.detailViewModel, this.title, this.descriptionDetails);
+  const _$LoadedImpl(this.detailViewModel, this.descriptionDetails, this.title);
 
   @override
   final DetailViewModel detailViewModel;
   @override
-  final String title;
+  final DescriptionModel descriptionDetails;
   @override
-  final DescriptionDetails descriptionDetails;
+  final String title;
 
   @override
   String toString() {
-    return 'DetailState.loaded(detailViewModel: $detailViewModel, title: $title, descriptionDetails: $descriptionDetails)';
+    return 'DetailState.loaded(detailViewModel: $detailViewModel, descriptionDetails: $descriptionDetails, title: $title)';
   }
 
   @override
@@ -400,14 +400,14 @@ class _$LoadedImpl implements _Loaded {
             other is _$LoadedImpl &&
             (identical(other.detailViewModel, detailViewModel) ||
                 other.detailViewModel == detailViewModel) &&
-            (identical(other.title, title) || other.title == title) &&
             (identical(other.descriptionDetails, descriptionDetails) ||
-                other.descriptionDetails == descriptionDetails));
+                other.descriptionDetails == descriptionDetails) &&
+            (identical(other.title, title) || other.title == title));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, detailViewModel, title, descriptionDetails);
+      Object.hash(runtimeType, detailViewModel, descriptionDetails, title);
 
   @JsonKey(ignore: true)
   @override
@@ -420,12 +420,12 @@ class _$LoadedImpl implements _Loaded {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)
+    required TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)
         loaded,
     required TResult Function() error,
   }) {
-    return loaded(detailViewModel, title, descriptionDetails);
+    return loaded(detailViewModel, descriptionDetails, title);
   }
 
   @override
@@ -433,12 +433,12 @@ class _$LoadedImpl implements _Loaded {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult? Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult? Function()? error,
   }) {
-    return loaded?.call(detailViewModel, title, descriptionDetails);
+    return loaded?.call(detailViewModel, descriptionDetails, title);
   }
 
   @override
@@ -446,14 +446,14 @@ class _$LoadedImpl implements _Loaded {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult Function()? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(detailViewModel, title, descriptionDetails);
+      return loaded(detailViewModel, descriptionDetails, title);
     }
     return orElse();
   }
@@ -499,12 +499,12 @@ class _$LoadedImpl implements _Loaded {
 abstract class _Loaded implements DetailState {
   const factory _Loaded(
       final DetailViewModel detailViewModel,
-      final String title,
-      final DescriptionDetails descriptionDetails) = _$LoadedImpl;
+      final DescriptionModel descriptionDetails,
+      final String title) = _$LoadedImpl;
 
   DetailViewModel get detailViewModel;
+  DescriptionModel get descriptionDetails;
   String get title;
-  DescriptionDetails get descriptionDetails;
   @JsonKey(ignore: true)
   _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -550,8 +550,8 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)
+    required TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)
         loaded,
     required TResult Function() error,
   }) {
@@ -563,8 +563,8 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult? Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult? Function()? error,
   }) {
@@ -576,8 +576,8 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(DetailViewModel detailViewModel, String title,
-            DescriptionDetails descriptionDetails)?
+    TResult Function(DetailViewModel detailViewModel,
+            DescriptionModel descriptionDetails, String title)?
         loaded,
     TResult Function()? error,
     required TResult orElse(),

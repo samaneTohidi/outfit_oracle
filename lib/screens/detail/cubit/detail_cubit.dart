@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../models/description_model.dart';
 import '../../../models/detail_view_model.dart';
 import '../../../repository/detail_view_request.dart';
-import '../detail_screen.dart';
 
 part 'detail_state.dart';
 
@@ -16,13 +16,12 @@ class DetailCubit extends Cubit<DetailState> {
 
   Future<void> fetchDetails(int id) async {
     emit(const DetailState.loading());
+
     try {
-      // Simulate network request
-      await Future.delayed(const Duration(seconds: 2));
       final DetailViewModel detailViewModel = await detailViewRequest(id: id);
-      final title = await _getTitle(detailViewModel);
       final description = await _getDescription(detailViewModel);
-      emit(DetailState.loaded(detailViewModel,title,description ));
+      final title = await _getTitle(detailViewModel);
+      emit(DetailState.loaded(detailViewModel ,description, title));
     } catch (error) {
       emit(const DetailState.error());
     }
@@ -30,12 +29,24 @@ class DetailCubit extends Cubit<DetailState> {
 
   Future<String> _getTitle(DetailViewModel detailViewModel) async {
     final jsonString = detailViewModel.collection?.title;
-    Map<String, dynamic> decodedTitle = jsonDecode(jsonString ?? '');
-    String enTitle = decodedTitle['en'];
-    return enTitle;
+    if (jsonString != null && jsonString.isNotEmpty) {
+      try {
+        Map<String, dynamic> decodedTitle = jsonDecode(jsonString);
+        if (decodedTitle.containsKey('en')) {
+          String enTitle = decodedTitle['en'];
+          return enTitle;
+        } else {
+          throw Exception('Key "en" not found in JSON');
+        }
+      } catch (e) {
+        throw Exception('Error decoding JSON: $e');
+      }
+    } else {
+      throw Exception('Title is null or empty');
+    }
   }
 
-  Future<DescriptionDetails> _getDescription(
+  Future<DescriptionModel> _getDescription(
       DetailViewModel detailViewModel) async {
     final jsonString = detailViewModel.collection?.description;
     if (jsonString != null && jsonString.isNotEmpty) {
@@ -46,14 +57,14 @@ class DetailCubit extends Cubit<DetailState> {
       String situationEn = decodedJson['situation']['en'];
       String designEn = decodedJson['design']['en'];
 
-      return DescriptionDetails(
+      return DescriptionModel(
         descEn: descEn,
         bodyShapeEn: bodyShapeEn,
         situationEn: situationEn,
         designEn: designEn,
       );
     } else {
-      return DescriptionDetails(
+      return DescriptionModel(
         descEn: '',
         bodyShapeEn: '',
         situationEn: '',

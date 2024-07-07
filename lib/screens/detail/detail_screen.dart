@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outfit_oracle/screens/detail/cubit/detail_cubit.dart';
 
+import '../../models/description_model.dart';
 import '../../models/detail_view_model.dart';
 import '../../widgets/save_collection_sheet.dart';
 
@@ -18,134 +19,116 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-
+  @override
+  void initState() {
+    super.initState();
+    context.read<DetailCubit>().fetchDetails(widget.id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    context.read<DetailCubit>().fetchDetails(widget.id);
+    return BlocConsumer<DetailCubit, DetailState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return state.when(
+          initial: () => _buildUI(),
+          loading: () => _buildUI(),
+          loaded: (detailViewModel, description, title) {
+            return _buildUI(detailViewModel: detailViewModel, description: description, title: title);
+          },
+          error: () => const Center(child: Text('Error loading details')),
+        );
+      },
+    );
+  }
+
+  Widget _buildUI({DetailViewModel? detailViewModel, DescriptionModel? description, String? title}) {
     return Scaffold(
-        body: BlocConsumer<DetailCubit, DetailState>(
-          listener: (context, state) {
-
-          },
-          builder: (context, state) {
-            return state.when(
-                initial: _buildInitial,
-                loading: _buildLoading,
-                loaded: _buildLoaded,
-                error: _buildError);
-          },
-        )
-
+      appBar: AppBar(title: _buildTitle(title)),
+      body: _buildContent(detailViewModel, description),
     );
   }
 
-
-
-  Widget _buildInitial() {
-    return const Center(
-      child: Text('Loading details...'),
-    );
-  }
-
-  Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildLoaded(DetailViewModel detailViewModel, String title, DescriptionDetails description) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 14.0),
+  Widget _buildContent(DetailViewModel? detailViewModel, DescriptionModel? description) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 80.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FractionallySizedBox(
+                  widthFactor: 1.0,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: _buildImage(detailViewModel),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _buildDescription(description),
+                ),
+              ],
+            ),
           ),
-          centerTitle: true,
         ),
-        body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 80.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FractionallySizedBox(
-                    widthFactor: 1.0,
-                    child: SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.6,
-                      child: Image.network(
-                        detailViewModel.collection?.image ?? '',
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.error),
-                        loadingBuilder: (context, child,
-                            loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      '${description.descEn}\n ${description
-                          .bodyShapeEn}\n ${description.situationEn}',
-                      style: const TextStyle(),
-                    ),
-                  ),
-                ],
-              ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    if (detailViewModel != null) {
+                      showSaveCollectionModalBottomSheet(context, detailViewModel);
+                    }
+                  },
+                  icon: const Icon(Icons.save),
+                  label: const Text('Save'),
+                ),
+              ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      showSaveCollectionModalBottomSheet(
-                          context, detailViewModel);
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-            ),
-      );
-  }
-
-  Widget _buildError() {
-    return const Center(
-      child: Text('No details available'),
+        ),
+      ],
     );
   }
-}
 
-class DescriptionDetails {
-  final String descEn;
-  final String bodyShapeEn;
-  final String situationEn;
-  final String designEn;
+  Widget _buildImage(DetailViewModel? detailViewModel) {
+    if (detailViewModel != null) {
+      return Image.network(
+        detailViewModel.collection!.image!,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const Center(child: CircularProgressIndicator());
+        },
+      );
+    } else {
+      return Container(
+        color: Colors.grey[200],
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+  }
 
-  DescriptionDetails({
-    required this.descEn,
-    required this.bodyShapeEn,
-    required this.situationEn,
-    required this.designEn,
-  });
+  Widget _buildDescription(DescriptionModel? description) {
+    if (description != null) {
+      return Text(
+        '${description.descEn}\n${description.bodyShapeEn}\n${description.situationEn}',
+        style: const TextStyle(),
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
+  }
+
+  Widget _buildTitle(String? title) {
+    return Text(title ?? 'Outfit Oracle');
+  }
 }
