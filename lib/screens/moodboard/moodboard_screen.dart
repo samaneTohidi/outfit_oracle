@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:outfit_oracle/screens/moodboard_detail/cubit/moodboard_detail_cubit.dart';
 import 'package:outfit_oracle/widgets/create_moodboard_sheet.dart';
 import 'package:outfit_oracle/widgets/sort_sheet.dart';
 
@@ -50,7 +51,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
           initial: () => _buildUi(),
           loading: () => _buildUi(),
           loaded: (categories, itemCounts, items) {
-            return _buildUi(categories: categories, itemCounts: itemCounts, items: items);
+            return _buildUi(
+                categories: categories, itemCounts: itemCounts, items: items);
           },
           error: () => const Center(child: Text('Error loading moodboard')),
         );
@@ -58,7 +60,10 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     );
   }
 
-  Widget _buildUi({List<CategoryDB>? categories, Map<int, int>? itemCounts, Map<int, List<Item>>? items}) {
+  Widget _buildUi(
+      {List<CategoryDB>? categories,
+      Map<int, int>? itemCounts,
+      Map<int, List<Item>>? items}) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('MY MOODBOARD'),
@@ -68,7 +73,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     );
   }
 
-  Widget _buildContent(List<CategoryDB>? categories, Map<int, int>? itemCounts, Map<int, List<Item>>? items) {
+  Widget _buildContent(List<CategoryDB>? categories, Map<int, int>? itemCounts,
+      Map<int, List<Item>>? items) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -81,7 +87,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                     IconButton(
                       icon: const Icon(Icons.sort),
                       onPressed: () {
-                        context.read<MoodboardCubit>().showSortModalBottomSheet(context, _sortBy, _handleSort);
+                        context.read<MoodboardCubit>().showSortModalBottomSheet(
+                            context, _sortBy, _handleSort);
                       },
                     ),
                     Text(
@@ -101,10 +108,10 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                 child: const Icon(Icons.add),
                 onPressed: () {
                   context.read<MoodboardCubit>().showMoodboardModalBottomSheet(
-                    context,
-                    categories ?? [],
-                    _updateCategories,
-                  );
+                        context,
+                        categories ?? [],
+                        _updateCategories,
+                      );
                 },
               ),
             ),
@@ -114,7 +121,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     );
   }
 
-  Widget _buildList(List<CategoryDB>? categories, Map<int, int>? itemCounts, Map<int, List<Item>>? items) {
+  Widget _buildList(List<CategoryDB>? categories, Map<int, int>? itemCounts,
+      Map<int, List<Item>>? items) {
     if (categories == null || itemCounts == null || items == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -135,7 +143,11 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MoodBoardDetailScreen(cat: category)),
+              MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                        create: (context) => MoodboardDetailCubit(),
+                        child: MoodBoardDetailScreen(cat: category),
+                      )),
             );
           },
         );
@@ -194,7 +206,8 @@ class CategoryItem extends StatelessWidget {
                           image: DecorationImage(
                             image: FileImage(imageFile),
                             fit: BoxFit.cover,
-                            onError: (error, stackTrace) => const Icon(Icons.error),
+                            onError: (error, stackTrace) =>
+                                const Icon(Icons.error),
                           ),
                         ),
                       ),
@@ -205,7 +218,8 @@ class CategoryItem extends StatelessWidget {
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
                         childAspectRatio: 8 / 10,
                         crossAxisSpacing: 1.0,
@@ -213,7 +227,9 @@ class CategoryItem extends StatelessWidget {
                       ),
                       itemCount: 8,
                       itemBuilder: (context, gridIndex) {
-                        final imageLink = gridIndex < items.length ? items[gridIndex].link : null;
+                        final imageLink = gridIndex < items.length
+                            ? items[gridIndex].link
+                            : null;
                         return GridTile(
                           child: Container(
                             margin: const EdgeInsets.all(2.0),
@@ -221,10 +237,11 @@ class CategoryItem extends StatelessWidget {
                               color: Colors.grey[200],
                               image: imageLink != null && imageLink.isNotEmpty
                                   ? DecorationImage(
-                                image: NetworkImage(imageLink),
-                                fit: BoxFit.cover,
-                                onError: (error, stackTrace) => const Icon(Icons.error),
-                              )
+                                      image: NetworkImage(imageLink),
+                                      fit: BoxFit.cover,
+                                      onError: (error, stackTrace) =>
+                                          const Icon(Icons.error),
+                                    )
                                   : null,
                             ),
                           ),
@@ -256,4 +273,3 @@ class CategoryItem extends StatelessWidget {
     );
   }
 }
-
