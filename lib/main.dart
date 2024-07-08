@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outfit_oracle/screens/collection/collection_screen.dart';
 import 'package:outfit_oracle/screens/collection/cubit/collection_cubit.dart';
-import 'package:outfit_oracle/screens/detail/detail_screen.dart';
-import 'package:outfit_oracle/screens/info/cubit/info_cubit.dart';
-import 'package:outfit_oracle/screens/info/info_screen.dart';
 import 'package:outfit_oracle/screens/moodboard/cubit/moodboard_cubit.dart';
 import 'package:outfit_oracle/screens/moodboard/moodboard_screen.dart';
 

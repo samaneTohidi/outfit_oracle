@@ -5,6 +5,7 @@ import 'package:outfit_oracle/repository/moodboard_database.dart';
 import 'package:outfit_oracle/screens/detail/detail_screen.dart';
 import 'package:outfit_oracle/screens/moodboard/cubit/moodboard_cubit.dart';
 import 'package:outfit_oracle/screens/moodboard_detail/cubit/moodboard_detail_cubit.dart';
+import 'package:outfit_oracle/screens/search/cubit/search_cubit.dart';
 import 'package:outfit_oracle/screens/search/search_screen.dart';
 
 import '../detail/cubit/detail_cubit.dart';
@@ -30,14 +31,14 @@ class _MoodBoardDetailScreenState extends State<MoodBoardDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MoodboardDetailCubit, MoodboardDetailState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return state.when(
-            initial: () => _buildUi(),
-            loading: () => _buildUi(),
-            loaded: (items) => _buildUi(items: items),
-            error: () => const Center(child: Text('Error loading moodboard detail')),);
+          initial: () => _buildUi(),
+          loading: () => _buildUi(),
+          loaded: (items) => _buildUi(items: items),
+          error: () =>
+          const Center(child: Text('Error loading moodboard detail')),);
       },
     );
   }
@@ -94,7 +95,10 @@ class _MoodBoardDetailScreenState extends State<MoodBoardDetailScreen> {
         },
       );
     } else {
-      return const SearchScreen();
+      return BlocProvider(
+        create: (context) => SearchCubit(),
+        child: const SearchScreen(),
+      );
     }
   }
 }

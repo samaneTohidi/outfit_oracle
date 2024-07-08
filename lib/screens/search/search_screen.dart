@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outfit_oracle/screens/collection/collection_screen.dart';
+import 'package:outfit_oracle/screens/collection/cubit/collection_cubit.dart';
 
 import '../../main.dart';
 
@@ -26,26 +28,25 @@ class _SearchScreenState extends State<SearchScreen> {
                 const Text(
                   'Lets find some looks for\n your new moodboard',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
                 ),
                 const SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.only(left:24 , right: 24),
-                  child:GestureDetector(
-                      onTap: (){
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context){
-                          return const CollectionScreen();
-                        }));
-
-                                        },
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return BlocProvider(
+                              create: (context) => CollectionCubit(),
+                              child: const CollectionScreen(),
+                            );
+                          }));
+                    },
                     child: Container(
                       height: 50,
                       width: double.infinity,
-                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(25),
@@ -53,11 +54,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       alignment: Alignment.center,
                       child: const Text(
                         'SEARCH',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                   ),
