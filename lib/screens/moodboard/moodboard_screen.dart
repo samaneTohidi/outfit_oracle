@@ -42,6 +42,12 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     context.read<MoodboardCubit>().updateCategories(updatedCategories);
   }
 
+  Future<void> _onSavePressed(CategoriesCompanion value) async {
+    context.read<MoodboardCubit>().addCategory(value);
+    final updatedCategories = await context.read<MoodboardCubit>().getCategories();
+    _updateCategories(updatedCategories);
+  }
+
   void showMoodboardModalBottomSheet(BuildContext context, List<CategoryDB> categories, Function(List<CategoryDB>) onCategoriesUpdated) {
     showModalBottomSheet(
       context: context,
@@ -52,7 +58,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
           heightFactor: 1,
           child: CreateMoodboardSheet(
             cats: categories,
-            onCatsUpdated: onCategoriesUpdated, cubit: context.read<MoodboardCubit>(),
+            onSavePressed: _onSavePressed,
           ),
         );
       },
@@ -108,7 +114,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                       },
                     ),
                     Text(
-                      _sortBy!.description ?? '',
+                      _sortBy.description ?? '',
                     ),
                   ],
                 ),
@@ -170,6 +176,8 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
       },
     );
   }
+
+
 }
 
 class CategoryItem extends StatelessWidget {
@@ -191,7 +199,6 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageFile = File(category.image!);
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Dismissible(
@@ -213,18 +220,16 @@ class CategoryItem extends StatelessWidget {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: AspectRatio(
-                      aspectRatio: 1 / 1.5,
-                      child: Container(
-                        margin: const EdgeInsets.all(2.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          image: DecorationImage(
-                            image: FileImage(imageFile),
-                            fit: BoxFit.cover,
-                            onError: (error, stackTrace) =>
-                                const Icon(Icons.error),
-                          ),
+                    child: Container(
+                      height: 196,
+                      margin: const EdgeInsets.all(2.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        image: DecorationImage(
+                          image: FileImage(imageFile),
+                          fit: BoxFit.cover,
+                          onError: (error, stackTrace) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -237,7 +242,7 @@ class CategoryItem extends StatelessWidget {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
-                        childAspectRatio: 8 / 10,
+                        mainAxisExtent: 100,
                         crossAxisSpacing: 1.0,
                         mainAxisSpacing: 1.0,
                       ),

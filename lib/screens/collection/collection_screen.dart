@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:outfit_oracle/widgets/collection_list_widget.dart';
 
 import '../../models/collection_list_model.dart';
 import '../../repository/collection_list_request.dart';
+import 'cubit/collection_cubit.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -12,80 +14,36 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
-  bool isLoading = true;
-  String? errorMessage;
-  List<Collections> collections = [];
-  bool isLoadingMore = false;
-  int limit = 10;
-  int offset = 0;
-
   @override
   void initState() {
     super.initState();
-    loadCollectionList();
+    context.read<CollectionCubit>().loadCollections();
   }
 
-  void loadCollectionList() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      CollectionListModel data =
-          await collectionListRequest(limit: limit, offset: offset);
-      setState(() {
-        collections.addAll(data.collections ?? []);
-        isLoading = false;
-        isLoadingMore = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = e.toString();
-        isLoading = false;
-        isLoadingMore = false;
-      });
-    }
-  }
-
-  void loadMore() {
-    if (!isLoadingMore) {
-      setState(() {
-        isLoadingMore = true;
-        offset += limit;
-      });
-      loadCollectionList();
-    }
+  void _loadMoreCollections() {
+    context.read<CollectionCubit>().loadCollections(loadMore: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading && collections.isEmpty
-        ? Scaffold(body: const Center(child: CircularProgressIndicator()))
-        : NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent &&
-                  !isLoadingMore) {
-                loadMore();
-              }
-              return false;
-            },
-            child: Scaffold(
-              appBar: AppBar(
-                title: const Text('Outfit Oracle'),
-                centerTitle: true,
-              ),
-              body: Column(
-                children: [
-                  Expanded(child: CollectionListWidget(collections: collections)),
-                  if (isLoadingMore)
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                ],
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Outfit Oracle'),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<CollectionCubit, CollectionState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            loaded: (collections) => CollectionListWidget(
+              collections: collections,
+              onLoadMoreCallback: _loadMoreCollections,
             ),
+            error: () => const Center(child: Text('Error: ')),
           );
-    // : CollectionListWidget(collections: collectionList);
+        },
+      ),
+    );
   }
 }
