@@ -12,18 +12,22 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Outfit Oracle',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => CollectionCubit()),
+        BlocProvider(create: (_) => MoodboardCubit()),
+      ],
+      child: MaterialApp(
+        title: 'Outfit Oracle',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
+          useMaterial3: true,
+        ),
+        debugShowCheckedModeBanner: false,
+        home: const NavigationDemo(),
       ),
-      debugShowCheckedModeBanner: false,
-
-      home: const NavigationDemo(),
     );
   }
 }
@@ -60,20 +64,11 @@ class _NavigationDemoState extends State<NavigationDemo> {
             icon: Icon(Icons.bookmark_border_outlined),
             label: 'MoodBoards',
           ),
-
         ],
       ),
       body: <Widget>[
-         BlocProvider(create: (BuildContext context){
-           return CollectionCubit();
-         },
-           child: const CollectionScreen(),
-         ),
-        BlocProvider(create: (BuildContext context){
-          return MoodboardCubit();
-        },
-          child: const MoodBoardScreen(),
-        ),
+        const CollectionScreen(),
+        const MoodBoardScreen(),
       ][currentPageIndex],
     );
   }

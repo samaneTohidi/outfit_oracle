@@ -42,6 +42,23 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
     context.read<MoodboardCubit>().updateCategories(updatedCategories);
   }
 
+  void showMoodboardModalBottomSheet(BuildContext context, List<CategoryDB> categories, Function(List<CategoryDB>) onCategoriesUpdated) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          widthFactor: 1,
+          heightFactor: 1,
+          child: CreateMoodboardSheet(
+            cats: categories,
+            onCatsUpdated: onCategoriesUpdated, cubit: context.read<MoodboardCubit>(),
+          ),
+        );
+      },
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MoodboardCubit, MoodboardState>(
@@ -59,7 +76,6 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
       },
     );
   }
-
   Widget _buildUi(
       {List<CategoryDB>? categories,
       Map<int, int>? itemCounts,
@@ -87,7 +103,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
                     IconButton(
                       icon: const Icon(Icons.sort),
                       onPressed: () {
-                        context.read<MoodboardCubit>().showSortModalBottomSheet(
+                        showSortModalBottomSheet(
                             context, _sortBy, _handleSort);
                       },
                     ),
@@ -107,7 +123,7 @@ class _MoodBoardScreenState extends State<MoodBoardScreen> {
               child: FloatingActionButton(
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  context.read<MoodboardCubit>().showMoodboardModalBottomSheet(
+                  showMoodboardModalBottomSheet(
                         context,
                         categories ?? [],
                         _updateCategories,

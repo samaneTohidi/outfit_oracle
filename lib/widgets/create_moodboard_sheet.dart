@@ -8,12 +8,13 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../repository/moodboard_database.dart';
+import '../screens/moodboard/cubit/moodboard_cubit.dart';
 
 class CreateMoodboardSheet extends StatefulWidget {
   final List<CategoryDB> cats;
   final ValueChanged<List<CategoryDB>> onCatsUpdated;
-
-  const CreateMoodboardSheet({super.key, required this.cats, required this.onCatsUpdated});
+  final MoodboardCubit cubit;
+  const CreateMoodboardSheet({super.key, required this.cats, required this.onCatsUpdated, required this.cubit,});
 
   @override
   State<CreateMoodboardSheet> createState() => _CreateMoodboardSheetState();
@@ -22,7 +23,6 @@ class CreateMoodboardSheet extends StatefulWidget {
 class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
   late TextEditingController _moodboardNameController;
 
-  final _db = MyDatabase.instance;
   final ImagePicker _picker = ImagePicker();
   File? _selectedImage;
 
@@ -61,10 +61,12 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
       image: drift.Value(imagePath ?? ''),
     );
 
-    await _db.addCategory(newCategory);
-    final updatedCategories = await _db.getCategories();
+    await widget.cubit.addCategory(newCategory);
+    final updatedCategories = await widget.cubit.getCategories();
     widget.onCatsUpdated(updatedCategories);
   }
+
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;

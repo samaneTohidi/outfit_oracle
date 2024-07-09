@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../repository/moodboard_database.dart';
-import '../../../widgets/create_moodboard_sheet.dart';
 import '../../../widgets/sort_sheet.dart';
 
 part 'moodboard_state.dart';
@@ -42,32 +41,12 @@ class MoodboardCubit extends Cubit<MoodboardState> {
     emit(MoodboardState.loaded(updatedCategories, {}, {}));
   }
 
-  void showMoodboardModalBottomSheet(BuildContext context, List<CategoryDB> categories, Function(List<CategoryDB>) onCategoriesUpdated) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return FractionallySizedBox(
-          widthFactor: 1,
-          heightFactor: 1,
-          child: CreateMoodboardSheet(
-            cats: categories,
-            onCatsUpdated: onCategoriesUpdated,
-          ),
-        );
-      },
-    );
+  Future<void> addCategory(CategoriesCompanion category) async {
+    await _db.addCategory(category);
   }
-  void showSortModalBottomSheet(BuildContext context, SortData? sortBy, Function(SortData?) onSortChanged) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SortSheet(
-          sortBy: sortBy,
-          onSortChanged: onSortChanged,
-        );
-      },
-    );
+
+  Future<List<CategoryDB>> getCategories() async {
+    return await _db.getCategories();
   }
 }
 
