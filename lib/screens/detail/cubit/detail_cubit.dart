@@ -6,6 +6,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../models/description_model.dart';
 import '../../../models/detail_view_model.dart';
 import '../../../repository/detail_view_request.dart';
+import '../../../repository/moodboard_database.dart';
+import '../../../widgets/sort_sheet.dart';
 
 part 'detail_state.dart';
 
@@ -13,6 +15,8 @@ part 'detail_cubit.freezed.dart';
 
 class DetailCubit extends Cubit<DetailState> {
   DetailCubit() : super(const DetailState.initial());
+
+  final _db = MyDatabase.instance;
 
   Future<void> fetchDetails(int id) async {
     emit(const DetailState.loading());
@@ -25,6 +29,27 @@ class DetailCubit extends Cubit<DetailState> {
     } catch (error) {
       emit(const DetailState.error());
     }
+  }
+
+
+  Future<List<CategoryDB>> getCategories() async {
+    return await _db.getCategories();
+  }
+
+  Future<List<CategoryDB>> getCategoriesSortedBy(SortData sortBy) async {
+    return await _db.getCategoriesSortedBy(sortBy);
+  }
+
+  Future<void> addCategory(CategoriesCompanion category) async {
+    await _db.addCategory(category);
+  }
+
+  Future<bool> itemExists(String itemId) async {
+    return await _db.itemExists(itemId);
+  }
+
+  Future<void> addCategoryWithItems(CategoriesCompanion category, List<ItemsCompanion> items) async {
+    return await _db.addCategoryWithItems(category, items);
   }
 
   Future<String> _getTitle(DetailViewModel detailViewModel) async {

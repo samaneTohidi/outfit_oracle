@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../repository/moodboard_database.dart';
-import '../screens/moodboard/cubit/moodboard_cubit.dart';
 
 class CreateMoodboardSheet extends StatefulWidget {
   final List<CategoryDB> cats;
@@ -88,23 +87,19 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
                       },
                     ),
                   ),
-                  const Center(
+                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Outfit Oracle',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        style: Theme.of(context).textTheme.headlineLarge
                         ),
+
                         Text(
                           'THE FASHION SEARCH ENGINE',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                          ),
+                            style: Theme.of(context).textTheme.bodyMedium
+
                         ),
                       ],
                     ),
@@ -116,22 +111,18 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                 Text(
                   'CREATE MOODBOARD',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    style: Theme.of(context).textTheme.headlineSmall
+
                 ),
                 const SizedBox(height: 40),
-                const Text(
+                 Text(
                   'Enter a name to personalize your moodboard\nand save it by clicking on "create"',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                     style: Theme.of(context).textTheme.bodyMedium
+
+                 ),
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(left: 24, right: 24),
@@ -163,13 +154,10 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child:  Text(
                       'SELECT IMAGE FROM GALLERY',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        style: Theme.of(context).textTheme.bodyLarge
+
                     ),
                   ),
                 ),
@@ -198,13 +186,10 @@ class _CreateMoodboardSheetState extends State<CreateMoodboardSheet> {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 alignment: Alignment.center,
-                child: const Text(
+                child:  Text(
                   'CREATE',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    style: Theme.of(context).textTheme.bodyLarge
+
                 ),
               ),
             ),

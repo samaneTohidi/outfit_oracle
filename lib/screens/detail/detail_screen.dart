@@ -84,7 +84,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 ElevatedButton.icon(
                   onPressed: () {
                     if (detailViewModel != null) {
-                      showSaveCollectionModalBottomSheet(context, detailViewModel);
+                      showSaveCollectionModalBottomSheet(context, detailViewModel,context.read<DetailCubit>()
+                      );
                     }
                   },
                   icon: const Icon(Icons.save),
@@ -121,7 +122,6 @@ class _DetailScreenState extends State<DetailScreen> {
     if (description != null) {
       return Text(
         '${description.descEn}\n${description.bodyShapeEn}\n${description.situationEn}',
-        style: const TextStyle(),
       );
     } else {
       return const Center(child: CircularProgressIndicator());
